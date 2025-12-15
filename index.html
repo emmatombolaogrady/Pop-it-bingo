@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pop-It Bingo</title>
+  <meta name="theme-color" content="#121836" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Mobile-friendly Pop-It Bingo prototype" />
+</head>
+<body>
+  <header class="topbar" aria-label="Game controls">
+    <div class="controls">
+      <button id="startBtn">Start</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resetBtn">Reset</button>
+      <label class="toggle">
+        <input type="checkbox" id="autoMarkToggle" />
+        <span>Auto-mark</span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section class="status" aria-live="polite">
+      <div class="called-summary">
+        <span id="numbersCalledLabel">Numbers called:</span>
+        <span id="numbersCalledCount">0</span>
+        <span class="last-call">Last call: <strong id="lastCall">-</strong></span>
+      </div>
+    </section>
+
+    <section class="board-section" aria-label="Your ticket">
+      <div id="board" class="board" role="grid" aria-label="4x4 bingo grid"></div>
+    </section>
+
+    <section class="prize-key" aria-label="Prize Key">
+      <ul id="prizeKey" class="prize-list"></ul>
+    </section>
+
+    <section class="called-stream" aria-label="Called numbers">
+      <div id="calledStream" class="stream"></div>
+    </section>
+  </main>
+
+  <!-- Stake Selection Modal -->
+  <div id="stakeModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="stakeTitle">
+    <div class="modal-content">
+      <h2 id="stakeTitle">Choose Your Stake</h2>
+      <div class="stake-grid">
+        <button class="stake-option" data-stake="0.10">£0.10</button>
+        <button class="stake-option" data-stake="0.50">£0.50</button>
+        <button class="stake-option" data-stake="1">£1</button>
+        <button class="stake-option" data-stake="2">£2</button>
+        <button class="stake-option" data-stake="5">£5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End-of-Game Modal -->
+  <div id="endModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal-content center">
+      <h2 id="endTitle">Game Over</h2>
+      <p id="endSummary"></p>
+      <button id="playAgainBtn">Play again</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <noscript>You need JavaScript enabled to play.</noscript>
+  <!-- Simple analytics/diagnostics could go here if needed -->
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="preload" href="script.js" as="script">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="robots" content="noindex" />
+  <!-- Note: remove robots noindex if you want it indexed. -->
+  
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>POP IT Bingo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>POP IT Bingo</h1>
+    </header>
+
+    <main class="app">
+      <section class="controls" aria-label="Game controls">
+        <button id="startBtn" class="btn primary" aria-label="Start or restart the game">Start Game</button>
+        <button id="pauseBtn" class="btn" aria-label="Pause or resume the game">Pause</button>
+        <button id="resetBtn" class="btn" aria-label="Reset the game to a new ticket">Reset</button>
+        <div class="toggle">
+          <input type="checkbox" id="autoMarkToggle" aria-label="Auto mark called numbers" />
+          <label for="autoMarkToggle">
+            <span class="track"></span>
+            <span class="thumb"></span>
+            <span class="label-text">Auto Mark</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="status" aria-live="polite">
+        <div id="callStatus">Numbers called: <strong>0</strong>/20</div>
+        <div id="lastCall" class="last-call" aria-label="Last number called">Last call: —</div>
+      </section>
+
+      <section class="board-section">
+        <div class="board" id="board" role="grid" aria-label="Your 4 by 4 bingo ticket"></div>
+      </section>
+
+      <section class="prizes" aria-label="Prizes">
+        <ul id="prizeList" class="prize-list"></ul>
+      </section>
+
+      <section class="prize-key" aria-label="Prize Key">
+        <h2>Prize Key</h2>
+        <ul id="prizeKey" class="prize-list"></ul>
+      </section>
+
+      <section class="called-stream" aria-label="Numbers called">
+        <h2>Called Numbers</h2>
+        <div id="calledStream" class="chips"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <small>Prototype — 4x4 ticket, 30-ball game, 20 calls, lines = rows/cols/diagonals</small>
+    </footer>
+
+    <!-- End-of-Game Modal -->
+    <div id="endModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle" aria-describedby="endBody">
+      <div class="modal-content">
+        <h2 id="endTitle"></h2>
+        <p id="endBody"></p>
+        <div id="endAmountWrap" class="amount-wrap hidden"><span id="endAmount"></span></div>
+        <button id="playAgainBtn" class="btn primary" aria-label="Play again">Play Again</button>
+      </div>
+    </div>
+
+    <!-- Stake Selection Modal -->
+    <div id="stakeModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="stakeTitle" aria-describedby="stakeBody">
+      <div class="modal-content">
+        <h2 id="stakeTitle">Buy your ticket!</h2>
+        <p id="stakeBody">Select the stake you would like to play at. You will receive 1 ticket per game and prizes vary by stake.</p>
+        <div class="stake-options" role="group" aria-label="Stake options">
+          <button class="btn stake-btn" data-stake="0.10">10p</button>
+          <button class="btn stake-btn" data-stake="0.25">25p</button>
+          <button class="btn stake-btn" data-stake="0.50">50p</button>
+          <button class="btn stake-btn" data-stake="0.75">75p</button>
+          <button class="btn stake-btn" data-stake="1.00">£1</button>
+          <button class="btn stake-btn" data-stake="1.50">£1.50</button>
+          <button class="btn stake-btn" data-stake="2.00">£2</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>
