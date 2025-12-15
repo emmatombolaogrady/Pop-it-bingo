@@ -36,6 +36,7 @@ main { max-width: 720px; margin: 0 auto; padding: 16px; }
 .modal.hidden { display: none; }
 .modal .modal-content { background: #0e1430; border: 1px solid #2a335a; border-radius: 16px; padding: 18px; width: min(520px, 92vw); color: #eef2ff; }
 .modal .modal-content.center { text-align: center; }
+.modal .modal-content p { margin: 8px 0 12px; color: #c9d1ff; }
 .stake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .stake-option { background: #5b7cff; color: white; border: none; padding: 10px 12px; border-radius: 12px; font-weight: 700; }
 
