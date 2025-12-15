@@ -228,7 +228,7 @@ function prepareCalls() {
   const shuffled = universe.sort(() => Math.random() - 0.5);
   toCall = shuffled.slice(0, TOTAL_CALLS);
   calledNumbers = [];
-  numbersCalledCountEl.textContent = "0";
+  numbersCalledCountEl.textContent = `0/${TOTAL_CALLS}`;
   lastCallEl.textContent = "-";
   calledStreamEl.innerHTML = "";
   // clear any pending highlight timeouts
@@ -247,7 +247,7 @@ function callNextNumber() {
   }
   const num = toCall.shift();
   calledNumbers.push(num);
-  numbersCalledCountEl.textContent = String(calledNumbers.length);
+  numbersCalledCountEl.textContent = `${calledNumbers.length}/${TOTAL_CALLS}`;
   lastCallEl.textContent = String(num);
 
   const chip = document.createElement("span"); chip.className = "chip"; chip.textContent = String(num);
