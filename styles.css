@@ -6,6 +6,7 @@ html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe
 button { background: #5b7cff; color: white; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(91,124,255,.3); }
 button:disabled { opacity: .6; }
 .toggle { display: inline-flex; gap: 6px; align-items: center; }
+.toggle .toggle-state { font-weight: 700; color: #b7c2ff; margin-left: 4px; }
 
 main { max-width: 720px; margin: 0 auto; padding: 16px; }
 .title { text-align: center; margin: 12px 0 8px; font-size: 1.6rem; color: #eef2ff; }

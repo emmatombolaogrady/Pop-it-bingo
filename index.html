@@ -17,9 +17,10 @@
         <button id="startBtn">Start</button>
         <button id="pauseBtn" disabled>Pause</button>
         <button id="resetBtn">Reset</button>
-        <label class="toggle">
-          <input type="checkbox" id="autoMarkToggle" />
+        <label class="toggle" for="autoMarkToggle">
+          <input type="checkbox" id="autoMarkToggle" aria-label="Auto mark called numbers" />
           <span>Auto-mark</span>
+          <span class="toggle-state" id="autoMarkState" aria-live="polite">Off</span>
         </label>
       </div>
     </section>

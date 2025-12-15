@@ -75,6 +75,7 @@ const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
 const autoMarkToggle = document.getElementById("autoMarkToggle");
+const autoMarkState = document.getElementById("autoMarkState");
 const stakeModal = document.getElementById("stakeModal");
 const endModal = document.getElementById("endModal");
 const endSummaryEl = document.getElementById("endSummary");
@@ -324,7 +325,13 @@ pauseBtn.addEventListener("click", () => {
 resetBtn.addEventListener("click", () => { resetGame(); hideEndModal(); });
 playAgainBtn.addEventListener("click", () => { hideEndModal(); resetGame(); showStakeModal(); });
 
-autoMarkToggle.addEventListener("change", (e) => { autoMark = e.target.checked; });
+autoMarkToggle.addEventListener("change", (e) => {
+  autoMark = e.target.checked;
+  if (autoMarkState) autoMarkState.textContent = autoMark ? "On" : "Off";
+});
+
+// Initialize toggle state text on load
+if (autoMarkState) autoMarkState.textContent = autoMark ? "On" : "Off";
 
 // Stake option handlers
 function wireStakeButtons() {
