@@ -9,6 +9,7 @@ button:disabled { opacity: .6; }
 
 main { max-width: 720px; margin: 0 auto; padding: 16px; }
 .title { text-align: center; margin: 12px 0 8px; font-size: 1.6rem; color: #eef2ff; }
+.controls-section { margin-bottom: 8px; }
 .status { text-align: center; margin-bottom: 8px; color: #c9d1ff; }
 .called-summary { display: flex; gap: 8px; justify-content: center; align-items: baseline; }
 .called-summary .last-call { color: #9bb0ff; }
