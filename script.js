@@ -306,6 +306,18 @@ function updateCalledHighlights() {
 
 function markCell(index, playEffects = false) {
   if (marked.has(index)) return; // already marked
+  // Only allow marking if this ticket number has been called
+  const num = ticketNumbers[index];
+  const isCallable = calledNumbers.includes(num);
+  if (!isCallable) {
+    // visual invalid feedback; optional subtle tick
+    const cellEl = boardEl.children[index];
+    if (cellEl) {
+      cellEl.classList.add("invalid");
+      setTimeout(() => cellEl.classList.remove("invalid"), 300);
+    }
+    return;
+  }
   marked.add(index);
   // cancel delayed highlight if pending for this cell
   const pending = highlightTimeouts.get(index);
