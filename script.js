@@ -40,17 +40,46 @@ function ensureAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
 function playPop() {
+  // Brighter "pop" using a short pitch blip + filtered noise burst
   ensureAudio();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.15);
+
+  const now = audioCtx.currentTime;
+  const master = audioCtx.createGain();
+  master.gain.setValueAtTime(0.9, now);
+  master.connect(audioCtx.destination);
+
+  // Tone blip (square for brighter attack)
+  const tone = audioCtx.createOscillator();
+  const toneGain = audioCtx.createGain();
+  tone.type = "square";
+  // Start high then drop quickly (blip)
+  tone.frequency.setValueAtTime(650, now);
+  tone.frequency.exponentialRampToValueAtTime(340, now + 0.06);
+  toneGain.gain.setValueAtTime(0.0, now);
+  toneGain.gain.linearRampToValueAtTime(0.25, now + 0.005);
+  toneGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+  tone.connect(toneGain); toneGain.connect(master);
+  tone.start(now);
+  tone.stop(now + 0.12);
+
+  // Soft noise pop (bandpass to emphasize mid-highs)
+  const bufferSize = 2048;
+  const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.6;
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.setValueAtTime(1500, now);
+  bp.Q.setValueAtTime(0.6, now);
+  const noiseGain = audioCtx.createGain();
+  noiseGain.gain.setValueAtTime(0.0, now);
+  noiseGain.gain.linearRampToValueAtTime(0.22, now + 0.004);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+  noise.connect(bp); bp.connect(noiseGain); noiseGain.connect(master);
+  noise.start(now);
+  noise.stop(now + 0.06);
 }
 
 // Subtle audio tick used as fallback for iOS where Vibration API isn't available
