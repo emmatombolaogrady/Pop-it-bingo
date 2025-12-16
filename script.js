@@ -79,6 +79,7 @@ const autoMarkState = document.getElementById("autoMarkState");
 const stakeModal = document.getElementById("stakeModal");
 const endModal = document.getElementById("endModal");
 const endSummaryEl = document.getElementById("endSummary");
+const endTitleEl = document.getElementById("endTitle");
 const playAgainBtn = document.getElementById("playAgainBtn");
 
 function formatGBP(amount) {
@@ -309,15 +310,20 @@ function resetGame() {
 
 function finishGame() {
   const lines = countCompletedLines();
+  let titleText = "";
   let msg = "";
   if (lines <= 1) {
-    msg = "Game over! No win this time";
-  } else if (lines >= 2) {
+    titleText = "Game over! No win this time";
+    msg = "";
+  } else {
+    titleText = "Congratulations you are a winner";
     const prize = PRIZE_KEY[Math.min(lines, 9)];
-    const multiplier = prize?.multiplier ?? 0;
-    const payout = selectedStake * multiplier;
-    msg = `${prize.label}: ${prize.reward}. Payout ${formatGBP(payout)}.`;
+    // Display reward text per requirement; special-case 2 lines wording
+    let rewardText = prize?.reward ?? "";
+    if (lines === 2) rewardText = "1 Free play";
+    msg = `You won the ${lines} line prize - ${rewardText}`;
   }
+  if (endTitleEl) endTitleEl.textContent = titleText;
   endSummaryEl.textContent = msg;
   showEndModal();
 }
