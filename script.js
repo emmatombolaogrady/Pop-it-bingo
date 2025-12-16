@@ -5,16 +5,17 @@ const UNIVERSE_MAX = 30;
 const TOTAL_CALLS = 20;
 const CALL_INTERVAL_MS = 3000;
 
-// Prize key mapping: lines -> descriptor/multiplier
+// Prize key mapping: lines -> label + reward text (multiplier kept for potential payouts)
 const PRIZE_KEY = {
-  2: { label: "2 Lines", reward: "Free Play", multiplier: 0 },
-  3: { label: "3 Lines", reward: "Stake Back", multiplier: 1 },
-  4: { label: "4 Lines", reward: "x2 stake", multiplier: 2 },
-  5: { label: "5 Lines", reward: "x5 stake", multiplier: 5 },
-  6: { label: "6 Lines", reward: "x10 stake", multiplier: 10 },
-  7: { label: "7 Lines", reward: "x25 stake", multiplier: 25 },
-  8: { label: "8 Lines", reward: "x50 stake", multiplier: 50 },
-  9: { label: "Full House (9 lines)", reward: "x100 stake", multiplier: 100 },
+  1: { label: "1L", reward: "No win", multiplier: 0 },
+  2: { label: "2L", reward: "Free Play", multiplier: 0 },
+  3: { label: "3L", reward: "x1 Stake", multiplier: 1 },
+  4: { label: "4L", reward: "x2 Stake", multiplier: 2 },
+  5: { label: "5L", reward: "x5 Stake", multiplier: 5 },
+  6: { label: "6L", reward: "x10 Stake", multiplier: 10 },
+  7: { label: "7L", reward: "x25 Stake", multiplier: 25 },
+  8: { label: "8L", reward: "x50 Stake", multiplier: 50 },
+  10: { label: "Full House", reward: "x100 Stake", multiplier: 100 },
 };
 
 // State
@@ -101,12 +102,15 @@ function generateTicket() {
 
 function renderPrizeKey() {
   prizeKeyEl.innerHTML = "";
-  const items = [2,3,4,5,6,7,8,9];
+  // Show requested items including 1L and Full House
+  const items = [1,2,3,4,5,6,7,8,10];
   for (const lines of items) {
+    const item = PRIZE_KEY[lines];
+    if (!item) continue;
     const li = document.createElement("li");
     li.id = `key-${lines}`;
-    const left = document.createElement("span"); left.textContent = PRIZE_KEY[lines].label;
-    const right = document.createElement("strong"); right.textContent = PRIZE_KEY[lines].reward;
+    const left = document.createElement("span"); left.textContent = item.label;
+    const right = document.createElement("strong"); right.textContent = item.reward;
     li.appendChild(left); li.appendChild(right);
     prizeKeyEl.appendChild(li);
   }
@@ -325,10 +329,9 @@ function finishGame() {
     msg = "";
   } else {
     titleText = "Congratulations you are a winner";
-    const prize = PRIZE_KEY[Math.min(lines, 9)];
-    // Display reward text per requirement; special-case 2 lines wording
-    let rewardText = prize?.reward ?? "";
-    if (lines === 2) rewardText = "1 Free play";
+    const prize = PRIZE_KEY[Math.min(lines, 10)];
+    // Display reward text per requirement
+    const rewardText = prize?.reward ?? "";
     msg = `You won the ${lines} line prize - ${rewardText}`;
   }
   if (endTitleEl) endTitleEl.textContent = titleText;
