@@ -291,9 +291,10 @@ function resetGame() {
 
 function finishGame() {
   const lines = countCompletedLines();
-  let msg = "No lines this time.";
-  if (lines === 1) msg = "1 line – close!";
-  else if (lines >= 2) {
+  let msg = "";
+  if (lines <= 1) {
+    msg = "Game over! No win this time";
+  } else if (lines >= 2) {
     const prize = PRIZE_KEY[Math.min(lines, 9)];
     const multiplier = prize?.multiplier ?? 0;
     const payout = selectedStake * multiplier;
