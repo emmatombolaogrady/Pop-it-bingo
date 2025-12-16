@@ -390,18 +390,29 @@ function finishGame() {
   if (lines <= 1) {
     titleText = "Game over! No win this time";
     msg = "";
-  } else {
-    titleText = "Congratulations you are a winner";
-    const prize = PRIZE_KEY[Math.min(lines, 10)];
-    // Display reward text per requirement
-    const rewardText = prize?.reward ?? "";
-    msg = `You won the ${lines} line prize - ${rewardText}`;
-    // Celebrate win with a stronger haptic
-    triggerHaptic("win");
+    if (endTitleEl) endTitleEl.textContent = titleText;
+    endSummaryEl.textContent = msg;
+    showEndModal();
+    return;
   }
+
+  // For wins: pre-highlight all completed lines for 3s, then show modal
+  titleText = "Congratulations you are a winner";
+  const prize = PRIZE_KEY[Math.min(lines, 10)];
+  const rewardText = prize?.reward ?? "";
+  msg = `You won the ${lines} line prize - ${rewardText}`;
   if (endTitleEl) endTitleEl.textContent = titleText;
   endSummaryEl.textContent = msg;
-  showEndModal();
+
+  // Trigger glow on all completed lines
+  const ids = listCompletedLineIds();
+  ids.forEach((id) => glowLine(id));
+
+  // After 3s of glow, show modal and trigger win haptic
+  setTimeout(() => {
+    showEndModal();
+    triggerHaptic("win");
+  }, 3000);
 }
 
 function startGame() {
