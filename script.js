@@ -217,7 +217,14 @@ function updateCalledHighlights() {
 function markCell(index, playEffects = false) {
   if (marked.has(index)) return; // already marked
   marked.add(index);
-  boardEl.children[index].classList.add("marked");
+  // cancel delayed highlight if pending for this cell
+  const pending = highlightTimeouts.get(index);
+  if (pending) { clearTimeout(pending); highlightTimeouts.delete(index); }
+  const cellEl = boardEl.children[index];
+  if (cellEl) {
+    cellEl.classList.add("marked");
+    cellEl.classList.remove("called");
+  }
   if (playEffects) { playPop(); triggerHaptic("tap"); }
   const lines = countCompletedLines();
   maybeAwardPrizes(lines);
@@ -256,8 +263,19 @@ function callNextNumber() {
   // delayed called highlight on board for unmarked cells
   ticketNumbers.forEach((n, idx) => {
     if (n === num) {
-      if (highlightTimeouts.has(idx)) clearTimeout(highlightTimeouts.get(idx));
-      const t = setTimeout(() => updateCalledHighlights(), 3000);
+      // ensure any previous timer is cleared
+      if (highlightTimeouts.has(idx)) {
+        clearTimeout(highlightTimeouts.get(idx));
+        highlightTimeouts.delete(idx);
+      }
+      // after 3s, if still unmarked, add 'called' highlight to just this cell
+      const t = setTimeout(() => {
+        if (!marked.has(idx)) {
+          const cell = boardEl.children[idx];
+          if (cell) cell.classList.add("called");
+        }
+        highlightTimeouts.delete(idx);
+      }, 3000);
       highlightTimeouts.set(idx, t);
       // auto-mark if enabled
       if (autoMark) markCell(idx, true);
