@@ -60,6 +60,16 @@ main { max-width: 720px; margin: 0 auto; padding: 16px; }
 /* Haptic fallback bump */
 .haptic-bump { animation: bump .12s ease; }
 @keyframes bump { 0% { transform: translateY(0); } 50% { transform: translateY(1px); } 100% { transform: translateY(0); } }
+.haptic-line { animation: bumpLine .22s ease; }
+@keyframes bumpLine { 0% { transform: translateY(0); } 50% { transform: translateY(1.5px); } 100% { transform: translateY(0); } }
+.haptic-win { animation: bumpWin .5s ease-in-out; }
+@keyframes bumpWin {
+  0% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(1px) scale(0.995); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(1px) scale(0.995); }
+  100% { transform: translateY(0) scale(1); }
+}
 :root {
   --bg: #0f1220;
   --panel: #141832;

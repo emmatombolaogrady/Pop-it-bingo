@@ -53,16 +53,50 @@ function playPop() {
   osc.stop(audioCtx.currentTime + 0.15);
 }
 
+// Subtle audio tick used as fallback for iOS where Vibration API isn't available
+function playTick(freq = 340, durationMs = 60, volume = 0.08) {
+  ensureAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs / 1000);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + durationMs / 1000);
+}
+
 // Haptics
 function triggerHaptic(kind = "tap") {
-  const supportsVibrate = "vibrate" in navigator;
+  const supportsVibrate = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
   if (supportsVibrate) {
-    if (kind === "line") navigator.vibrate([8, 12, 8]);
-    else navigator.vibrate(10);
+    switch (kind) {
+      case "line":
+        navigator.vibrate([20, 40, 20]);
+        break;
+      case "win":
+        navigator.vibrate([30, 60, 30, 90]);
+        break;
+      case "tap":
+      default:
+        navigator.vibrate(15);
+        break;
+    }
   } else {
-    // visual fallback bump
-    document.body.classList.add("haptic-bump");
-    setTimeout(() => document.body.classList.remove("haptic-bump"), 140);
+    // iOS-friendly visual/audio fallback
+    const cls = kind === "win" ? "haptic-win" : kind === "line" ? "haptic-line" : "haptic-bump";
+    const dur = kind === "win" ? 500 : kind === "line" ? 220 : 140;
+    document.body.classList.add(cls);
+    setTimeout(() => document.body.classList.remove(cls), dur);
+    // tiny audio tick to enhance perceived haptic
+    if (kind === "win") {
+      playTick(300, 80); setTimeout(() => playTick(280, 80), 120); setTimeout(() => playTick(260, 100), 280);
+    } else if (kind === "line") {
+      playTick(320, 70);
+    } else {
+      playTick(360, 60);
+    }
   }
 }
 
@@ -333,6 +367,8 @@ function finishGame() {
     // Display reward text per requirement
     const rewardText = prize?.reward ?? "";
     msg = `You won the ${lines} line prize - ${rewardText}`;
+    // Celebrate win with a stronger haptic
+    triggerHaptic("win");
   }
   if (endTitleEl) endTitleEl.textContent = titleText;
   endSummaryEl.textContent = msg;
