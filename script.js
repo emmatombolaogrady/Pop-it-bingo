@@ -176,7 +176,7 @@ function glowLine(lineId) {
     const idx = r*BOARD_SIZE + c;
     const cell = boardEl.children[idx];
     cell.classList.add("line-glow");
-    setTimeout(() => cell.classList.remove("line-glow"), 1600);
+    setTimeout(() => cell.classList.remove("line-glow"), 3000);
   });
 }
 
@@ -228,6 +228,14 @@ function markCell(index, playEffects = false) {
   }
   if (playEffects) { playPop(); triggerHaptic("tap"); }
   const lines = countCompletedLines();
+  // Glow any newly completed lines for 3 seconds
+  const ids = listCompletedLineIds();
+  ids.forEach((id) => {
+    if (!completedLineIds.has(id)) {
+      completedLineIds.add(id);
+      glowLine(id);
+    }
+  });
   maybeAwardPrizes(lines);
 }
 
