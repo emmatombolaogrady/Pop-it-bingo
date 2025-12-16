@@ -23,6 +23,11 @@ main { max-width: 720px; margin: 0 auto; padding: 16px; }
   border-radius: 12px;
   white-space: nowrap;
 }
+.last-call-box {
+  /* Distinct color to improve visibility */
+  background: #2531a1;
+  border-color: #3f52ff;
+}
 .numbers-called strong, .last-call-box strong { color: #eef2ff; }
 .last-call-box span { color: #9bb0ff; }
 .last-call-box strong { display: inline-block; width: 2ch; text-align: right; }
