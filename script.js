@@ -324,8 +324,11 @@ function prepareCalls() {
 function callNextNumber() {
   if (toCall.length === 0) {
     stopCalling();
-    // 3s grace before end modal
-    endGraceTimeout = setTimeout(() => finishGame(), 3000);
+    // 3s grace to allow manual marking; then auto-mark any remaining matches and finish
+    endGraceTimeout = setTimeout(() => {
+      autoMarkRemainingMatches();
+      finishGame();
+    }, 3000);
     return;
   }
   const num = toCall.shift();
@@ -355,6 +358,18 @@ function callNextNumber() {
       highlightTimeouts.set(idx, t);
       // auto-mark if enabled
       if (autoMark) markCell(idx, true);
+    }
+  });
+}
+
+// At end of game, ensure any called numbers on the ticket are marked
+function autoMarkRemainingMatches() {
+  ticketNumbers.forEach((num, idx) => {
+    if (calledNumbers.includes(num) && !marked.has(idx)) {
+      // mark silently without extra effects; cancel any pending highlight
+      const pending = highlightTimeouts.get(idx);
+      if (pending) { clearTimeout(pending); highlightTimeouts.delete(idx); }
+      markCell(idx, false);
     }
   });
 }
